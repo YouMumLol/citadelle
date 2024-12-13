@@ -1,27 +1,27 @@
-import React from "react";
+import { useState } from "react";
 
 export default function Rune() {
   // Dynamically import all images from the /Assets directory
-  const bottleModules = import.meta.glob("../Assets/bottle*.png", { eager: true });
-  const runeModules = import.meta.glob("../Assets/runes/*.png", { eager: true });
+  const bottleModules = import.meta.glob("../Assets/bottle*.png", { eager: true }) as Record<string, { default: string }>;
+  const runeModules = import.meta.glob("../Assets/runes/*.png", { eager: true }) as Record<string, { default: string }>;
 
-  // Extract and sort bottle images
-  const bottles = Object.values(bottleModules).map((module) => module.default || module);
+  // Extract and sort bottle images as strings
+  const bottles: string[] = Object.values(bottleModules).map((module) => module.default);
 
-  // Extract and sort rune images by filename
-  const runeImages = Object.entries(runeModules)
+  // Extract and sort rune images by filename as strings
+  const runeImages: string[] = Object.entries(runeModules)
     .map(([path, module]) => ({
       path,
-      src: module.default || module,
+      src: module.default,
     }))
     .sort((a, b) => {
-      const aIndex = parseInt(a.path.match(/(\d+)\.png$/)?.[1], 10); // Extract numeric part of filename
-      const bIndex = parseInt(b.path.match(/(\d+)\.png$/)?.[1], 10); // Extract numeric part of filename
+      const aIndex = parseInt(a.path.match(/(\d+)\.png$/)?.[1] ?? "0", 10); // Extract numeric part of filename
+      const bIndex = parseInt(b.path.match(/(\d+)\.png$/)?.[1] ?? "0", 10); // Extract numeric part of filename
       return aIndex - bIndex;
     })
     .map((entry) => entry.src); // Only keep the image paths
 
-  const [runes, setRunes] = React.useState([]);
+  const [runes, setRunes] = useState<string[]>([]);
 
   return (
     <div className="min-h-screen p-4">
@@ -30,7 +30,7 @@ export default function Rune() {
       {/* Bottles Section */}
       <div className="flex flex-wrap justify-center gap-6 mb-10 mx-auto w-1/2">
         {bottles.map((bottle, index) => (
-          <div key={index} className="relative w-[13%] min-w-[120px]">
+          <div key={`bottle-${index}`} className="relative w-[13%] min-w-[120px]">
             <img src={bottle} alt={`Bottle ${index + 1}`} />
             {runes.length > index && (
               <img
@@ -47,7 +47,7 @@ export default function Rune() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-1/3 items-center mx-auto">
         {runeImages.map((rune, index) => (
           <img
-            key={index}
+            key={`rune-${index}`}
             className="bg-stone-600 border-[1em] aspect-sq border-stone-700 cursor-pointer hover:scale-105 transition-transform"
             src={rune}
             alt={`Rune option ${index}`}

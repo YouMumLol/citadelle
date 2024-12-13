@@ -1,14 +1,11 @@
-import React from "react";
 import '../index.css';
 import { Link, useNavigate } from "react-router-dom";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+  } from "@/Components/ui/dropdown-menu"
   
 export default function Navbar() {
     const navigate = useNavigate();
